@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  k0s:
+    container_name: k0s
+    image: docker.io/k0sproject/k0s:latest
+    command: k0s controller --config=/etc/k0s/config.yaml --enable-worker 
+    hostname: k0s
+    privileged: true
+    volumes:
+      - "/var/lib/k0s"
+      - "./k0s:/opt"
+    tmpfs:
+      - /run
+      - /var/run
+    ports:
+      - "6500:6443"
+    network_mode: "bridge"
+    environment:
+      K0S_CONFIG: |-
+        apiVersion: k0s.k0sproject.io/v1beta1
+        kind: ClusterConfig
+        metadata:
+          name: k0s
+        # Any additional configuration goes here ...
+
+# services:
+#   k0s-worker1:
+#     image: docker.io/k0sproject/k0s:latest
+#     container_name: k0s-worker1
+#     hostname: k0s-worker1
+#     privileged: true
+#     volumes:
+#       - "./k0s:/var/lib/k0s"
+#     command: k0s worker $token
+
+  # node-2:
+  #   image: centos:7
+  #   container_name: k0s_node_2
+  #   command: /bin/sh -c "/usr/sbin/init"
+  #   privileged: true
+  #   tty: true
+  #   volumes:
+  #     - ./data:/var/lib/k0s:Z
+  #   depends_on:
+  #     - k0s
+
+  # node-3:
+  #   image: centos:7
+  #   container_name: k0s_node_3
+  #   command: /bin/sh -c "/usr/sbin/init"
+  #   privileged: true
+  #   tty: true
+  #   volumes:
+  #     - ./data:/var/lib/k0s:Z
+  #   depends_on:
+  #     - k0s
